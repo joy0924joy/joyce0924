@@ -319,7 +319,7 @@ function restartSameOrder(){
   pool=shuffle(players);startLen=players.length;qualifyRemaining=startLen;qualifyGroupsData=buildQualifyGroupsData(pool);
   showScreen("battleScreen");showNextGroup();
 }
-function confirmReset(){if(confirm("确定要重置当前选美进度吗？"))resetAll();}
+function confirmReset(){if(confirm("确定要重置当前进度吗？"))resetAll();}
 async function resetAll(){
   try{if(!photoDB)await openPhotoDB();await deleteAllPhotos();await clearAllCustoms();}catch(e){console.error(e)}
   currentGroup=[];pool=[];active=[];ranking=[];finPool=[];finalStages=[];finalsStartCount=16;selectedPlayer=null;selectedIndex=-1;groupIndex=0;phase="qualify";finStage=0;qualifyRemaining=64;players=[];
