@@ -195,28 +195,6 @@ function setCustomPhoto(name){
   };
   inp.click();
 }
-function exportEmbeddedPage(){
-  showToast("正在生成内嵌版…");
-  setTimeout(()=>{
-    try{
-      // 收集所有球员名字、英文名、照片(dataURL) -> 转成 JSON 内嵌
-      const names=[],enMap={},photoMap={};
-      players.forEach(p=>{ names.push(p.name); enMap[p.name]=p.en||""; if(p.image)photoMap[p.name]=p.image; });
-      let src=document.documentElement.outerHTML;
-      src=src.replace(/const PLAYER_NAMES=\[.*?\];/s, "const PLAYER_NAMES=["+names.map(n=>'"'+n+'"').join(',')+"];");
-      src=src.replace(/const ENGLISH_NAMES=\{[^;]*?\};/s, "const ENGLISH_NAMES={"+Object.keys(enMap).map(k=>'"'+k+'":"'+String(enMap[k]).replace(/"/g,'\\"')+'"').join(',')+"};");
-      src=src.replace(/const EMBEDDED_PHOTOS=\{.*?\};/s, "const EMBEDDED_PHOTOS="+JSON.stringify(photoMap)+";");
-      const blob=new Blob([src],{type:'text/html;charset=utf-8'});
-      const fname='足球选美-内嵌版.html';
-      const file=new File([blob],fname,{type:'text/html;charset=utf-8'});
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        navigator.share({files:[file],title:'足球选美-内嵌版'}).then(()=>showToast('已通过系统分享导出')).catch(()=>downloadOrOpen(blob,fname));
-      }else{
-        downloadOrOpen(blob,fname);
-      }
-    }catch(e){console.error(e);showToast('导出失败：'+e.message);}
-  },50);
-}
 function downloadOrOpen(blob,fname){
   try{
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();
