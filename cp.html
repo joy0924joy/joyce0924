@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>12人CP连线 · 缠绕红线版</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #f5f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+               "Microsoft YaHei", sans-serif;
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================
+   连线画布
+========================= */
+
+#lineCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =========================
+   人物卡片
+========================= */
+
+.avatar {
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+  width: 128px;
+  user-select: none;
+}
+
+.avatar .photo {
+  width: 128px;
+  height: 170px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.14);
+  background: #eee;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.avatar .photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar .name {
+  margin-top: 7px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #222;
+  white-space: nowrap;
+}
+
+.avatar.active .photo {
+  border-color: #ff4d7e;
+  box-shadow:
+    0 0 0 5px rgba(255, 77, 126, 0.25),
+    0 8px 22px rgba(0, 0, 0, 0.18);
+  transform: scale(1.04);
+}
+
+/* =========================
+   顶部 4 张
+========================= */
+
+.top-1 {
+  top: 20px;
+  left: calc(50% - 266px);
+}
+
+.top-2 {
+  top: 20px;
+  left: calc(50% - 133px);
+}
+
+.top-3 {
+  top: 20px;
+  left: calc(50% + 0px);
+}
+
+.top-4 {
+  top: 20px;
+  left: calc(50% + 133px);
+}
+
+/* =========================
+   底部 4 张
+========================= */
+
+.bottom-1 {
+  bottom: 20px;
+  left: calc(50% - 266px);
+}
+
+.bottom-2 {
+  bottom: 20px;
+  left: calc(50% - 133px);
+}
+
+.bottom-3 {
+  bottom: 20px;
+  left: calc(50% + 0px);
+}
+
+.bottom-4 {
+  bottom: 20px;
+  left: calc(50% + 133px);
+}
+
+/* =========================
+   左侧 2 张
+========================= */
+
+.left-1 {
+  top: calc(50% - 115px);
+  left: 18px;
+}
+
+.left-2 {
+  top: calc(50% + 15px);
+  left: 18px;
+}
+
+/* =========================
+   右侧 2 张
+========================= */
+
+.right-1 {
+  top: calc(50% - 115px);
+  right: 18px;
+}
+
+.right-2 {
+  top: calc(50% + 15px);
+  right: 18px;
+}
+
+/* =========================
+   底部按钮
+========================= */
+
+.controls {
+  position: fixed;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 9px;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 17px;
+  background: #222;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+
+button.secondary {
+  background: #888;
+}
+
+/* =========================================================
+   手机端
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .avatar {
+    width: 88px;
+  }
+
+  .avatar .photo {
+    width: 88px;
+    height: 118px;
+    border-radius: 14px;
+    border-width: 2px;
+  }
+
+  .avatar .name {
+    margin-top: 5px;
+    font-size: 12px;
+  }
+
+  /* 顶部四人 */
+  .top-1 {
+    top: 12px;
+    left: calc(50% - 184px);
+  }
+
+  .top-2 {
+    top: 12px;
+    left: calc(50% - 92px);
+  }
+
+  .top-3 {
+    top: 12px;
+    left: calc(50% + 0px);
+  }
+
+  .top-4 {
+    top: 12px;
+    left: calc(50% + 92px);
+  }
+
+  /* 底部四人 */
+  .bottom-1 {
+    bottom: 48px;
+    left: calc(50% - 184px);
+  }
+
+  .bottom-2 {
+    bottom: 48px;
+    left: calc(50% - 92px);
+  }
+
+  .bottom-3 {
+    bottom: 48px;
+    left: calc(50% + 0px);
+  }
+
+  .bottom-4 {
+    bottom: 48px;
+    left: calc(50% + 92px);
+  }
+
+  /* 左右两侧 */
+  .left-1 {
+    top: calc(50% - 100px);
+    left: 7px;
+  }
+
+  .left-2 {
+    top: calc(50% + 12px);
+    left: 7px;
+  }
+
+  .right-1 {
+    top: calc(50% - 100px);
+    right: 7px;
+  }
+
+  .right-2 {
+    top: calc(50% + 12px);
+    right: 7px;
+  }
+
+  .controls {
+    bottom: 8px;
+    gap: 5px;
+  }
+
+  button {
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+}
+
+/* 超窄手机 */
+@media (max-width: 390px) {
+
+  .avatar {
+    width: 78px;
+  }
+
+  .avatar .photo {
+    width: 78px;
+    height: 105px;
+  }
+
+  .top-1,
+  .bottom-1 {
+    left: calc(50% - 165px);
+  }
+
+  .top-2,
+  .bottom-2 {
+    left: calc(50% - 82px);
+  }
+
+  .top-3,
+  .bottom-3 {
+    left: calc(50% + 0px);
+  }
+
+  .top-4,
+  .bottom-4 {
+    left: calc(50% + 82px);
+  }
+
+  .left-1,
+  .left-2 {
+    left: 4px;
+  }
+
+  .right-1,
+  .right-2 {
+    right: 4px;
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<canvas id="lineCanvas"></canvas>
+
+  <!-- =========================
+       顶部 4 人
+  ========================== -->
+
+  <div class="avatar top-1" data-name="T1">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/s7jGBRUe5lCB" alt="">
+    </div>
+    <div class="name">T1</div>
+  </div>
+
+  <div class="avatar top-2" data-name="T2">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/p4lehqRw3WAa" alt="">
+    </div>
+    <div class="name">T2</div>
+  </div>
+
+  <div class="avatar top-3" data-name="T3">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/xCyKu2b9t8s3" alt="">
+    </div>
+    <div class="name">T3</div>
+  </div>
+
+  <div class="avatar top-4" data-name="T4">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/QWcrHCSdVik7" alt="">
+    </div>
+    <div class="name">T4</div>
+  </div>
+
+  <!-- =========================
+       底部 4 人
+  ========================== -->
+
+  <div class="avatar bottom-1" data-name="B1">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/BWGG9zYGTip1" alt="">
+    </div>
+    <div class="name">B1</div>
+  </div>
+
+  <div class="avatar bottom-2" data-name="B2">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/5TRuND66j7LC" alt="">
+    </div>
+    <div class="name">B2</div>
+  </div>
+
+  <div class="avatar bottom-3" data-name="B3">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/6vE6IboMuLBo" alt="">
+    </div>
+    <div class="name">B3</div>
+  </div>
+
+  <div class="avatar bottom-4" data-name="B4">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/kovtpD1DEbbv" alt="">
+    </div>
+    <div class="name">B4</div>
+  </div>
+
+  <!-- =========================
+       左侧 2 人
+  ========================== -->
+
+  <div class="avatar left-1" data-name="L1">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/soeXz0hldTSn" alt="">
+    </div>
+    <div class="name">L1</div>
+  </div>
+
+  <div class="avatar left-2" data-name="L2">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/qh7hSZImLb0g" alt="">
+    </div>
+    <div class="name">L2</div>
+  </div>
+
+  <!-- =========================
+       右侧 2 人
+  ========================== -->
+
+  <div class="avatar right-1" data-name="R1">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/6y6BRwzaeUgD" alt="">
+    </div>
+    <div class="name">R1</div>
+  </div>
+
+  <div class="avatar right-2" data-name="R2">
+    <div class="photo">
+      <img src="https://img.remit.ee/i/bXOE11JSbKQl" alt="">
+    </div>
+    <div class="name">R2</div>
+  </div>
+
+  <!-- =========================
+       操作按钮
+  ========================== -->
+
+  <div class="controls">
+    <button id="clearBtn">清空连线</button>
+    <button id="exportBtn">导出截图</button>
+    <button id="resetBtn" class="secondary">重置全部</button>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+
+const canvas = document.getElementById('lineCanvas');
+const ctx = canvas.getContext('2d');
+
+const avatars = document.querySelectorAll('.avatar');
+
+let selected = null;
+let lines = [];
+
+
+/* =========================================================
+   Canvas
+========================================================= */
+
+function resizeCanvas() {
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  redrawLines();
+}
+
+
+/* =========================================================
+   获取人物照片中心点
+========================================================= */
+
+function getCenter(el) {
+
+  const photo = el.querySelector('.photo');
+  const rect = photo.getBoundingClientRect();
+
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  };
+}
+
+
+/* =========================================================
+   计算“缠绕路线”
+   
+   每条线都会经过中间区域，
+   并根据 index 自动产生不同的弯曲方向。
+========================================================= */
+
+function getCurvePoints(p1, p2, index) {
+
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  /*
+    根据连线编号制造不同的“绕线层”
+    让多条线不要全部重合。
+  */
+
+  const lane = ((index % 7) - 3) * 34;
+
+  /*
+    垂直于两点连线的方向
+  */
+
+  let nx = -dy / distance;
+  let ny = dx / distance;
+
+  /*
+    如果线太短，减少夸张弯曲
+  */
+
+  const bend = Math.min(150, Math.max(55, distance * 0.18));
+
+  /*
+    中间两个控制点
+  */
+
+  const c1 = {
+    x: p1.x + dx * 0.28 + nx * (lane + bend),
+    y: p1.y + dy * 0.28 + ny * (lane + bend)
+  };
+
+  const c2 = {
+    x: p1.x + dx * 0.72 + nx * (lane - bend),
+    y: p1.y + dy * 0.72 + ny * (lane - bend)
+  };
+
+  return { c1, c2 };
+}
+
+
+/* =========================================================
+   绘制一条缠绕红线
+========================================================= */
+
+function drawRedLine(p1, p2, index) {
+
+  const { c1, c2 } = getCurvePoints(p1, p2, index);
+
+
+  /*
+    第一层：
+    白色粗描边
+
+    这样红线经过其他红线时，
+    会有明显的视觉分离。
+  */
+
+  ctx.save();
+
+  ctx.beginPath();
+
+  ctx.moveTo(p1.x, p1.y);
+
+  ctx.bezierCurveTo(
+    c1.x, c1.y,
+    c2.x, c2.y,
+    p2.x, p2.y
+  );
+
+  ctx.lineWidth = 12;
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  ctx.shadowColor = 'rgba(0,0,0,.18)';
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetY = 2;
+
+  ctx.stroke();
+
+
+  /*
+    第二层：
+    红色主线
+  */
+
+  ctx.beginPath();
+
+  ctx.moveTo(p1.x, p1.y);
+
+  ctx.bezierCurveTo(
+    c1.x, c1.y,
+    c2.x, c2.y,
+    p2.x, p2.y
+  );
+
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = '#e60033';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  ctx.shadowColor = 'rgba(230,0,51,.4)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 2;
+
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+
+/* =========================================================
+   重绘所有线
+========================================================= */
+
+function redrawLines() {
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  lines.forEach((line, index) => {
+
+    drawRedLine(
+      line.p1,
+      line.p2,
+      index
+    );
+
+  });
+}
+
+
+/* =========================================================
+   点击人物
+========================================================= */
+
+avatars.forEach(avatar => {
+
+  avatar.addEventListener('click', () => {
+
+    /*
+      第一次点击：
+      选中人物
+    */
+
+    if (!selected) {
+
+      selected = avatar;
+
+      avatar.classList.add('active');
+
+      return;
+    }
+
+
+    /*
+      再点自己：
+      取消选择
+    */
+
+    if (selected === avatar) {
+
+      selected.classList.remove('active');
+
+      selected = null;
+
+      return;
+    }
+
+
+    /*
+      点击第二个人：
+      创建 CP 连线
+    */
+
+    const p1 = getCenter(selected);
+    const p2 = getCenter(avatar);
+
+    lines.push({
+      p1,
+      p2
+    });
+
+
+    selected.classList.remove('active');
+
+    selected = null;
+
+    redrawLines();
+
+  });
+
+});
+
+
+/* =========================================================
+   清空所有连线
+========================================================= */
+
+document
+  .getElementById('clearBtn')
+  .addEventListener('click', () => {
+
+    lines = [];
+
+    redrawLines();
+
+  });
+
+
+/* =========================================================
+   重置全部
+========================================================= */
+
+document
+  .getElementById('resetBtn')
+  .addEventListener('click', () => {
+
+    lines = [];
+
+    selected = null;
+
+    avatars.forEach(a => {
+
+      a.classList.remove('active');
+
+    });
+
+    redrawLines();
+
+  });
+
+
+/* =========================================================
+   导出截图
+========================================================= */
+
+document
+  .getElementById('exportBtn')
+  .addEventListener('click', async () => {
+
+    const wrapper =
+      document.querySelector('.wrapper');
+
+    const c = await html2canvas(wrapper, {
+      backgroundColor: '#f5f5f7',
+      scale: 2,
+      useCORS: true
+    });
+
+    const a =
+      document.createElement('a');
+
+    a.download =
+      'cp-match-red-line.png';
+
+    a.href =
+      c.toDataURL('image/png');
+
+    a.click();
+
+  });
+
+
+/* =========================================================
+   初始化
+========================================================= */
+
+window.addEventListener(
+  'resize',
+  resizeCanvas
+);
+
+resizeCanvas();
+
+</script>
+
+</body>
+</html>
