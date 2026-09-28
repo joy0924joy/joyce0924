@@ -190,17 +190,6 @@ function setCustomPhoto(name){
   };
   inp.click();
 }
-function downloadOrOpen(blob,fname){
-  try{
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();
-    setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href);},1500);
-    showToast('已生成，请查看下载/保存');
-  }catch(e){
-    try{const url=URL.createObjectURL(blob);window.open(url,'_blank');showToast('已在新窗口打开，可长按保存');}
-    catch(e2){showToast('自动下载失败，建议用电脑浏览器打开再导出');}
-  }
-}
-
 /* ============ 机制：全员初选 → 终选淘汰制 → TOP9 ============ */
 // 初选：全部球员随机分组，每组 4 人；选 1 个最喜欢的晋级，其余淘汰、不再出现。全员各比一次，不漏人。
 // 终选：晋级名单开始，每次最多看 4 人，淘汰你最不喜欢的 1 人，直到只剩 1 人为冠军。
