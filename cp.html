@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>脚球男CP大连线</title>
+<title>纯路人版脚球男CP大连线</title>
 <style>
 * {
   box-sizing: border-box;
@@ -40,14 +40,14 @@ body {
   position: absolute;
   z-index: 2;
   cursor: pointer;
-  width: 120px;
+  width: 140px;
   touch-action: manipulation;
 }
 
 .avatar .photo {
-  width: 120px;
-  height: 160px;
-  border-radius: 20px;
+  width: 140px;
+  height: 185px;
+  border-radius: 22px;
   overflow: hidden;
   border: 4px solid #fff;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
@@ -75,24 +75,24 @@ body {
 }
 
 /* 顶部 4 人 */
-.top-1 { top: 28px; left: calc(50% - 250px); }
-.top-2 { top: 28px; left: calc(50% - 125px); }
+.top-1 { top: 28px; left: calc(50% - 280px); }
+.top-2 { top: 28px; left: calc(50% - 140px); }
 .top-3 { top: 28px; left: calc(50% + 0px); }
-.top-4 { top: 28px; left: calc(50% + 125px); }
+.top-4 { top: 28px; left: calc(50% + 140px); }
 
 /* 底部 4 人 */
-.bottom-1 { bottom: 90px; left: calc(50% - 250px); }
-.bottom-2 { bottom: 90px; left: calc(50% - 125px); }
+.bottom-1 { bottom: 90px; left: calc(50% - 280px); }
+.bottom-2 { bottom: 90px; left: calc(50% - 140px); }
 .bottom-3 { bottom: 90px; left: calc(50% + 0px); }
-.bottom-4 { bottom: 90px; left: calc(50% + 125px); }
+.bottom-4 { bottom: 90px; left: calc(50% + 140px); }
 
 /* 左侧 2 人 */
-.left-1 { top: 50%; left: 28px; transform: translateY(-115%); }
-.left-2 { top: 50%; left: 28px; transform: translateY(5%); }
+.left-1 { top: 50%; left: 32px; transform: translateY(-115%); }
+.left-2 { top: 50%; left: 32px; transform: translateY(5%); }
 
 /* 右侧 2 人 */
-.right-1 { top: 50%; right: 28px; transform: translateY(-115%); }
-.right-2 { top: 50%; right: 28px; transform: translateY(5%); }
+.right-1 { top: 50%; right: 32px; transform: translateY(-115%); }
+.right-2 { top: 50%; right: 32px; transform: translateY(5%); }
 
 .controls {
   position: fixed;
@@ -122,13 +122,13 @@ button.secondary {
 /* 手机端适配：缩小间距并重新安排左右两列 */
 @media (max-width: 720px) {
   .avatar {
-    width: 90px;
+    width: 100px;
   }
 
   .avatar .photo {
-    width: 90px;
-    height: 120px;
-    border-radius: 16px;
+    width: 100px;
+    height: 135px;
+    border-radius: 18px;
     border-width: 3px;
   }
 
@@ -136,21 +136,21 @@ button.secondary {
     font-size: 13px;
   }
 
-  .top-1 { top: 24px; left: calc(50% - 190px); }
-  .top-2 { top: 24px; left: calc(50% - 95px); }
+  .top-1 { top: 24px; left: calc(50% - 210px); }
+  .top-2 { top: 24px; left: calc(50% - 105px); }
   .top-3 { top: 24px; left: calc(50% + 0px); }
-  .top-4 { top: 24px; left: calc(50% + 95px); }
+  .top-4 { top: 24px; left: calc(50% + 105px); }
 
-  .bottom-1 { bottom: 90px; left: calc(50% - 190px); }
-  .bottom-2 { bottom: 90px; left: calc(50% - 95px); }
+  .bottom-1 { bottom: 90px; left: calc(50% - 210px); }
+  .bottom-2 { bottom: 90px; left: calc(50% - 105px); }
   .bottom-3 { bottom: 90px; left: calc(50% + 0px); }
-  .bottom-4 { bottom: 90px; left: calc(50% + 95px); }
+  .bottom-4 { bottom: 90px; left: calc(50% + 105px); }
 
-  .left-1 { top: 46%; left: 14px; transform: translateY(-110%); }
-  .left-2 { top: 54%; left: 14px; transform: translateY(-10%); }
+  .left-1 { top: 46%; left: 16px; transform: translateY(-110%); }
+  .left-2 { top: 54%; left: 16px; transform: translateY(-10%); }
 
-  .right-1 { top: 46%; right: 14px; transform: translateY(-110%); }
-  .right-2 { top: 54%; right: 14px; transform: translateY(-10%); }
+  .right-1 { top: 46%; right: 16px; transform: translateY(-110%); }
+  .right-2 { top: 54%; right: 16px; transform: translateY(-10%); }
 }
 </style>
 </head>
@@ -251,29 +251,29 @@ function getCentralControlPoint(p1, p2) {
   };
 }
 
-// 绘制单条带白色描边的红线
+// 绘制单条带白色描边的红线（已改细）
 function drawRedLine(p1, p2) {
   const control = getCentralControlPoint(p1, p2);
 
-  // 白色外描边
+  // 白色外描边（变细）
   ctx.beginPath();
-  ctx.lineWidth = 12;
+  ctx.lineWidth = 8;
   ctx.strokeStyle = '#ffffff';
   ctx.lineCap = 'round';
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetY = 2;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetY = 1;
   ctx.moveTo(p1.x, p1.y);
   ctx.quadraticCurveTo(control.x, control.y, p2.x, p2.y);
   ctx.stroke();
 
-  // 红色主线
+  // 红色主线（变细）
   ctx.beginPath();
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 3.5;
   ctx.strokeStyle = '#e60033';
-  ctx.shadowColor = 'rgba(230, 0, 51, 0.55)';
-  ctx.shadowBlur = 10;
-  ctx.shadowOffsetY = 2;
+  ctx.shadowColor = 'rgba(230, 0, 51, 0.4)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 1;
   ctx.moveTo(p1.x, p1.y);
   ctx.quadraticCurveTo(control.x, control.y, p2.x, p2.y);
   ctx.stroke();
